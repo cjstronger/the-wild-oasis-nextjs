@@ -12,7 +12,7 @@ export default async function Reservation({ cabinId, cabin }) {
   ]);
   return (
     <div className="flex border border-primary-800">
-      <DateSelector settings={settings} cabinDates={cabinDates} />
+      <DateSelector settings={settings} cabinDates={cabinDates} cabin={cabin} />
       {session?.user ? (
         <ReservationForm cabin={cabin} user={session.user} />
       ) : (

@@ -1,12 +1,30 @@
 "use client";
 
+import { differenceInDays } from "date-fns";
+import { createBooking } from "../_lib/actions";
 import { useReservation } from "./ReservationContext";
+import FormButton from "./FormButton";
 
 function ReservationForm({ cabin, user }) {
   // CHANGE
-  const { maxCapacity } = cabin;
+  const { maxCapacity, regularPrice, discount, id: cabinId } = cabin;
 
   const { range } = useReservation();
+
+  const startDate = range.from;
+  const endDate = range.to;
+  const numNights = differenceInDays(endDate, startDate);
+  const cabinPrice = (regularPrice - discount) * numNights;
+
+  const reservationData = {
+    startDate,
+    endDate,
+    numNights,
+    cabinPrice,
+    cabinId,
+  };
+
+  const updatedBooking = createBooking.bind(null, reservationData);
 
   return (
     <div className="scale-[1.01]">
@@ -24,11 +42,10 @@ function ReservationForm({ cabin, user }) {
           <p>{user.name}</p>
         </div>
       </div>
-      <p>
-        from {String(range.from)} to {String(range.to)}
-      </p>
-
-      <form className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col">
+      <form
+        action={updatedBooking}
+        className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col"
+      >
         <div className="space-y-2">
           <label htmlFor="numGuests">How many guests?</label>
           <select
@@ -53,6 +70,7 @@ function ReservationForm({ cabin, user }) {
             Anything we should know about your stay?
           </label>
           <textarea
+            maxLength="1000"
             name="observations"
             id="observations"
             className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
@@ -63,9 +81,7 @@ function ReservationForm({ cabin, user }) {
         <div className="flex justify-end items-center gap-6">
           <p className="text-primary-300 text-base">Start by selecting dates</p>
 
-          <button className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
-            Reserve now
-          </button>
+          <FormButton formLabel="Reserving...">Reserve Now</FormButton>
         </div>
       </form>
     </div>

@@ -52,7 +52,7 @@ export default async function Page(params) {
         </div>
         <input type="hidden" name="reservationId" value={reservationId} />
         <div className="flex justify-end items-center gap-6">
-          <FormButton />
+          <FormButton formLabel="Updating...">Update</FormButton>
         </div>
       </form>
     </div>
